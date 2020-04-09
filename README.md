@@ -1,6 +1,8 @@
 # VimPyTerm
 
-A Vim pluggin that adds an interactive Python terminal to Vim.
+A Vim plugin that adds an interactive Python terminal to Vim.
+
+[![Vim-Py-Term.png](https://i.postimg.cc/YCDCHP9y/Vim-Py-Term.png)](https://postimg.cc/BjD05M2x)
 
 ## Installation
 
