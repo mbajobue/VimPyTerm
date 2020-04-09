@@ -1,4 +1,7 @@
-" VimPyTerm
+" VimPyTerm: interactive Python terminal inside Vim
+" Maintainer:   Manuel Bajo Buenestado <lolobajo@gmail.com>
+" License:      MIT LICENSE
+
 
 set splitbelow
 set splitright
@@ -8,13 +11,22 @@ if !exists('g:VimPyTerm_map_keys')
     let g:VimPyTerm_map_keys = 1
 endif
 
+if !exists('g:VimPyTerm_rows')
+    let g:VimPyTerm_rows = 15
+endif
+
+
 " Open and close the Python console
 
-function! VimPyTerm()
+function! VimPyTerm(...)
     if s:vimpyterm == 0
-        term ++rows=15 ++close python
+	if a:0 > 0 
+            let s:term = a:1
+	else
+            let s:term = "python"
+	endif
+        execute "term ++rows=".g:VimPyTerm_rows." ++close ".s:term
         let s:currentWindow=winnr()
-        let s:term = "python"
         let s:vimpyterm = 1
         wincmd p
 	
@@ -34,7 +46,7 @@ function! VimPyTerm()
     endif
 endfunction
 
-command VimPyTerm call VimPyTerm()
+command -nargs=* VimPyTerm call VimPyTerm(<f-args>)
 
 
 " Send lines of code
