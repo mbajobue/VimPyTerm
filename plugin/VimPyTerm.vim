@@ -4,6 +4,9 @@ set splitbelow
 set splitright
 let s:vimpyterm = 0
 
+if !exists('g:VimPyTerm_map_keys')
+    let g:VimPyTerm_map_keys = 1
+endif
 
 " Open and close the Python console
 
@@ -14,10 +17,20 @@ function! VimPyTerm()
         let s:term = "python"
         let s:vimpyterm = 1
         wincmd p
+	
+	" Mappings. Feel free to change them in your vimrc file.
+	if g:VimPyTerm_map_keys
+	    map <space> :call SendCode()<CR>
+	    vmap <space> :<c-u>call SendVisual()<CR>
+	endif
     else
         exe s:currentWindow . "wincmd w"
         call term_sendkeys(s:term, "quit()\<CR>")	
         let s:vimpyterm = 0
+	if g:VimPyTerm_map_keys
+	    map <space> <space>
+	    vmap <space> <space>
+	endif
     endif
 endfunction
 
@@ -26,14 +39,14 @@ command VimPyTerm call VimPyTerm()
 
 " Send lines of code
 
-function! ExecuteLine()
+function! s:ExecuteLine()
     let currentLine   = getline(".")
     call term_sendkeys(s:term, currentLine)
     call term_sendkeys(s:term, "\<CR>")	
     call cursor(nextnonblank(line(".") +1 ), 1)
 endfunction
 
-function! SendEnter()
+function! s:SendEnter()
     call term_sendkeys(s:term, "\<CR>")	
     call cursor(nextnonblank(line(".") +1 ), 1)
 endfunction
@@ -44,13 +57,13 @@ function! SendCode()
     while strpart(getline('.'),0,1)==' ' || strpart(getline('.'),0,1)=='	'
         call cursor(prevnonblank(line(".") - 1 ), 1)
     endwhile
-    call ExecuteLine()
+    call s:ExecuteLine()
     while strpart(getline('.'),0,1)==' ' || strpart(getline('.'),0,1)=='	'
-        call ExecuteLine()
+        call s:ExecuteLine()
         let ind = 1
     endwhile
     if ind == 1
-        call SendEnter()
+        call s:SendEnter()
     endif
 endfunction
 
@@ -59,7 +72,7 @@ endfunction
 
 " A function to get the selected text in the visual mode, 
 " courtesy of xolox (https://stackoverflow.com/users/788200/xolox)
-function! GetVisualSelection()
+function! s:GetVisualSelection()
     " Why is this not a built-in Vim script function?!
     let [line_start, column_start] = getpos("'<")[1:2]
     let [line_end, column_end] = getpos("'>")[1:2]
@@ -73,19 +86,9 @@ function! GetVisualSelection()
 endfunction
 
 function! SendVisual()
-    let selectedLine  = GetVisualSelection()
+    let selectedLine  = s:GetVisualSelection()
     call term_sendkeys(s:term, selectedLine)
     call term_sendkeys(s:term, "\<CR>")	
 endfunction
 
 
-" Mappings. Feel free to change them in your vimrc file.
-
-if !exists('g:VimPyTerm_map_keys')
-    let g:VimPyTerm_map_keys = 1
-endif
-
-if g:VimPyTerm_map_keys
-    map <space> :call SendCode()<CR>
-    vmap <space> :<c-u>call SendVisual()<CR>
-endif
