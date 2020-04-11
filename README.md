@@ -20,7 +20,7 @@ The terminal can be used like any other Vim split. For example it can be resized
 
 Use the space bar to send and execute Python code in the terminal:
 
-- While on normal mode, the space key will send the current line where your cursor is positioned at. If your cursor is located inside a piece of indented code, the whole block of code will be sent and executed (for example, a function). 
+- While on normal mode, the space key will send the current line where your cursor is positioned at (or the next non-blank line of code). If your cursor is located inside a piece of indented code, the whole block of code will be sent and executed (for example, a function). 
 - While on visual mode, the selected text will be sent to the Python terminal.
 
 Feel free to change the default key map in your `.vimrc` like so:
