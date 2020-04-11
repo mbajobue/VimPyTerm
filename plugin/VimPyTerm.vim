@@ -58,24 +58,20 @@ function! s:ExecuteLine()
     call cursor(nextnonblank(line(".") +1 ), 1)
 endfunction
 
-function! s:SendEnter()
-    call term_sendkeys(s:term, "\<CR>")	
-    call cursor(nextnonblank(line(".") +1 ), 1)
-endfunction
-
 function! SendCode()
     let ind = 0
     call cursor(nextnonblank(line(".")), 1)
-    while strpart(getline('.'),0,1)==' ' || strpart(getline('.'),0,1)=='	'
+    while strpart(getline('.'), 0, 1)==' ' || strpart(getline('.'), 0, 1)=='	'
         call cursor(prevnonblank(line(".") - 1 ), 1)
     endwhile
     call s:ExecuteLine()
-    while strpart(getline('.'),0,1)==' ' || strpart(getline('.'),0,1)=='	'
+    while strpart(getline('.'), 0, 1)==' ' || strpart(getline('.'), 0, 1)=='	'
         call s:ExecuteLine()
         let ind = 1
     endwhile
     if ind == 1
-        call s:SendEnter()
+    	call term_sendkeys(s:term, "\<CR>")	
+    	call cursor(nextnonblank(line(".")), 1)
     endif
 endfunction
 
